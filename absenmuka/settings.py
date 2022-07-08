@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 MIDDLEWARE_CLASSES = (
     # Simplified static file serving.
     # https://warehouse.python.org/project/whitenoise/
+    "django.middleware.security.SecurityMiddleware",
     'whitenoise.middleware.WhiteNoiseMiddleware',
     ...
 )
