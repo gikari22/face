@@ -17,6 +17,8 @@ import os
 import mimetypes
 mimetypes.add_type("text/css", ".css", True)
 
+import django_heroku
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vu2$bvn^bom1$2p73oj!x3f$m-3!7^ow2(h3^vc&0qpw3l)=&g'
+#SECRET_KEY = 'django-insecure-vu2$bvn^bom1$2p73oj!x3f$m-3!7^ow2(h3^vc&0qpw3l)=&g'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -137,3 +139,5 @@ AUTH_USER_MODEL = "absen.User"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+django_heroku.settings(locals())
