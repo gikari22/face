@@ -24,7 +24,7 @@ MIDDLEWARE_CLASSES = (
     # https://warehouse.python.org/project/whitenoise/
     'whitenoise.middleware.WhiteNoiseMiddleware',
     ...
-
+)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
