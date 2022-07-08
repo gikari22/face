@@ -1,1 +1,1 @@
-web: gunicorn face_attendance.wsgi
+release: python manage.py migrate
