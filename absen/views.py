@@ -36,10 +36,10 @@ def register_student(request):
 		else:
 			print('here')
 			msg = 'form is not valid'
-			return render(request, 'register_Student.html', {'form': form, 'msg' : msg})
+			return render(request, 'register_student.html', {'form': form, 'msg' : msg})
 	else:
 		form = SignUpForm1()
-		return render(request, 'register_Student.html', {'form': form, 'msg' : msg})
+		return render(request, 'register_student.html', {'form': form, 'msg' : msg})
 
 def register_teacher(request):
 	msg = None
@@ -52,10 +52,10 @@ def register_teacher(request):
 		else:
 			print('here')
 			msg = 'form is not valid'
-			return render(request, 'register_Teacher.html', {'form': form, 'msg' : msg})
+			return render(request, 'register_teacher.html', {'form': form, 'msg' : msg})
 	else:
 		form = SignUpForm2()
-		return render(request, 'register_Teacher.html', {'form': form, 'msg' : msg})
+		return render(request, 'register_teacher.html', {'form': form, 'msg' : msg})
 
 def index(request):
 	form = LoginForm(request.POST or None)
