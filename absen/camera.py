@@ -18,7 +18,7 @@ detector = MTCNN()
 
 class VideoCamera(object):
 	def __init__(self):
-		self.cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+		self.cam = cv2.VideoCapture(0)
 		self.cam.set(3, 700) # set video width
 		self.cam.set(4, 550) # set video height
 		self.count = 0
@@ -33,7 +33,6 @@ class VideoCamera(object):
 
 		__, frame = self.cam.read()
 			
-		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		#faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
 		result = detector.detect_faces(frame)
@@ -45,8 +44,9 @@ class VideoCamera(object):
 			cv2.rectangle(frame,
 						(bounding_box[0], bounding_box[1]),
 						(bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
-						(34,255,140),
+						(34, 255, 140),
 						4)
+			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 			'''if self.count <=30:
 				nama_file = "{0}_{1}_{2}_{3}-".format(data.id_user,data.username,data.first_name,data.last_name) + str(self.count) + ".jpg"
 				cv2.imwrite("dataset/" + nama_file, gray[bounding_box[1]:bounding_box[1]+bounding_box[3],bounding_box[0]: bounding_box[0] + bounding_box[2]])
