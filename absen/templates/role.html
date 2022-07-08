@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/png" href="{% static 'elarning/assets/img//speech-bubble.ico' %}">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+	<title>Login</title>
+
+	<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+      <!--     Fonts and icons     -->
+      <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+      <link href="static 'https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+      <!-- CSS Files -->
+      <link href="{% static 'elarning/assets/css/bootstrap.min.css' %}" rel="stylesheet" />
+      <link href="{% static 'elarning/assets/css/paper-kit.css '%}" rel="stylesheet" />
+    
+</head>
+<body class="register-page sidebar-collapse">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top navbar-transparent " color-on-scroll="300">
+    <div class="container">
+      <div class="navbar-translate mr">
+        <a class="navbar-brand mr" href="https://demos.creative-tim.com/paper-kit/index.html" rel="tooltip" title="Coded by Creative Tim" data-placement="bottom" target="_blank">
+          AntiJoki
+        </a>
+    </div>
+  </nav>
+  <!-- End Navbar -->
+
+  <div class="page-header" style="background-image: url('../static/elarning/assets/img/login.jpg');
+        background-position: center center;
+        background-size: cover;
+        position: relative;">
+    <div class="filter"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 ml-auto mr-auto">
+          <div class="card card-register">
+            <center><h3 class="title mx-auto">Choose Your Role</h3></center>
+             {% load widget_tweaks %}
+            <div class="row">
+                <div class="col-xs-4 mx-auto">
+                    <div class="forgot">
+                      <a href="{% url 'register_student' %}" class="btn btn-info btn-block btn-round">Student</a>
+                    </div>
+                </div>
+
+                <div class="col-xs-4 mx-auto">
+                    <div class="forgot">
+                        <a href="{% url 'register_teacher' %}" class="btn btn-info btn-block btn-round">Teacher</a>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-auto">
+                    <div class="forgot">
+                        <a href="{% url 'index' %}" class="btn btn-link btn-simple">Back</a>
+                    </div>
+                </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer register-footer text-center">
+      
+  </div>
+  <!--   Core JS Files   -->
+  <script src="{% static 'elarning/assets/js/core/jquery.min.js'%}" type="text/javascript"></script>
+  <script src="{% static 'elarning/assets/js/core/popper.min.js'%}" type="text/javascript"></script>
+  <script src="{% static 'elarning/assets/js/core/bootstrap.min.js'%}" type="text/javascript"></script>
+  <!--  Plugin for Switches, full documentation here: http://www.jque.re/plugins/version3/bootstrap.switch/ -->
+  <script src="{% static 'elarning/assets/js/plugins/bootstrap-switch.js'%}"></script>
+  <!--  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ -->
+  <script src="{% static 'elarning/assets/js/plugins/nouislider.min.js'%}" type="text/javascript"></script>
+  <!--  Plugin for the DatePicker, full documentation here: https://github.com/uxsolutions/bootstrap-datepicker -->
+  <script src="{% static 'elarning/assets/js/plugins/moment.min.js'%}"></script>
+  <script src="{% static 'elarning/assets/js/plugins/bootstrap-datepicker.js'%}" type="text/javascript"></script>
+  <!-- Control Center for Paper Kit: parallax effects, scripts for the example pages etc -->
+  <script src="{% static 'elarning/assets/js/paper-kit.js'%}" type="text/javascript"></script>
+  <!--  Google Maps Plugin    -->
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+</body>
+</html>

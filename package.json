@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "fs-js": "^1.0.6",
+    "videojs-record": "^4.5.0"
+  }
+}
