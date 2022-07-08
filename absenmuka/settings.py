@@ -20,6 +20,7 @@ MIDDLEWARE_CLASSES = (
 
 from pathlib import Path
 import os
+import whitenoise
 #import django_heroku
 
 import mimetypes
