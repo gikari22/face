@@ -7,6 +7,7 @@ from django.http.response import StreamingHttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from absen.camera import *
+from absen.train import *
 
 from django.forms import formset_factory
 
@@ -24,6 +25,9 @@ from . forms import LoginForm, SignUpForm1, SignUpForm2, kelas_guru, edit_teache
 
 import cv2
 import numpy as np
+from PIL import Image
+import os
+from mtcnn_cv2 import MTCNN
 
 def register_student(request):
 	msg = None
@@ -122,7 +126,7 @@ def kelas_muridku(request, id_kelas_guru = None):
 		return render(request, 'kelas_murid.html', {'kls': kls, 'lis' : lis, 'kuis' : kuis})
 	else:
 		return redirect('student')
-	
+
 def create(request):
 	current_user = request.user
 	lis = KelasModel.objects.filter(id_user=current_user.id_user)
@@ -158,6 +162,26 @@ def semua_kelas_murid(request):
 		lis.append(clss)
 	return render(request, 'semua_kelas_murid.html',{'lis' : lis})
 
+recognizer = cv2.face.LBPHFaceRecognizer_create()
+detector = MTCNN()
+
+def getImagesAndLabels(id_kelas):
+		kelas = id_kelas
+		lis = list_kelas_murid.objects.filter(id_kelas_guru=kelas) 
+		path = "dataset/"
+		grup_sis_image = []
+
+		for i in lis:
+			sis_img = []
+			path_sis = wajah.objects.filter(id_user=i.id_user_id)
+			for j in path_sis:
+				fix_path = path+j.nama_file
+				grup_sis_image.append(fix_path)
+
+		#imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
+		faceSamples=[]
+		ids = []
+
 def buatabsen(request, id_kelas_guru = None):
 	current_user = request.user
 	lis = KelasModel.objects.filter(id_user=current_user.id_user)
@@ -165,7 +189,8 @@ def buatabsen(request, id_kelas_guru = None):
 		form = absen(request.POST)
 		if form.is_valid():
 			nama_absen = form.cleaned_data.get('nama_kuis')
-			id_kelas_guru = form.cleaned_data.get('id_kelas_guru')
+			id_kelas_guru = request.POST.get('id_kelas_guru')
+			getImagesAndLabels(id_kelas_guru)
 			form.save()
 			return redirect('semua_kelas_guru')
 		else:
@@ -179,7 +204,6 @@ def buatabsen(request, id_kelas_guru = None):
 		else:
 			form = absen()
 			return render(request, 'buatabsen.html', {'form': form, 'lis' : lis})
-
 
 def logout(request):
     return render(request, 'index.html')
@@ -207,6 +231,9 @@ def enroll(request):
 def classroom(request):
 	return render(request, 'class.html')
 
+def record(request):
+	return render(request,"record.html")
+
 def gen(camera,username):
 	while True:
 		frame = camera.get_frame(username)
@@ -218,6 +245,3 @@ def video_stream(request):
 	id_user = current_user.id_user
 	return StreamingHttpResponse(gen(VideoCamera(),id_user),
       	content_type='multipart/x-mixed-replace; boundary=frame')
-
-def record(request):
-	return render(request,"record.html")

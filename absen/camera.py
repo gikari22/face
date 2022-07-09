@@ -33,6 +33,7 @@ class VideoCamera(object):
 
 		__, frame = self.cam.read()
 			
+		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		#faces = face_detector.detectMultiScale(gray, 1.3, 5)
 
 		result = detector.detect_faces(frame)
@@ -46,13 +47,16 @@ class VideoCamera(object):
 						(bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
 						(34, 255, 140),
 						4)
-			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-			'''if self.count <=30:
+			if self.count <=30:
 				nama_file = "{0}_{1}_{2}_{3}-".format(data.id_user,data.username,data.first_name,data.last_name) + str(self.count) + ".jpg"
 				cv2.imwrite("dataset/" + nama_file, gray[bounding_box[1]:bounding_box[1]+bounding_box[3],bounding_box[0]: bounding_box[0] + bounding_box[2]])
 				record = wajah(nama_file=nama_file,id_user_id=data.id_user)
-				record.save()'''
-
+				record.save()
+			else:
+				data.is_face_recorded = 1
+				data.save()
+				self.cam.stream.release()
+				break
 
 		frame_flip = cv2.flip(frame, 15)
 		ret, frame = cv2.imencode('.jpg', frame_flip)

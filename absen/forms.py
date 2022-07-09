@@ -73,7 +73,7 @@ class absen(forms.ModelForm):
 	
 	class Meta:
 		model = absen
-		fields = ('nama_absen', 'id_kelas_guru')
+		fields = ('nama_absen', 'id_kelas_guru','jumlah_terisi')
 
 class joinkelasForm(forms.Form):
 	id_user = forms.ModelChoiceField(queryset=User.objects.all(),
