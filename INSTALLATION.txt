@@ -1,0 +1,9 @@
+1. Extract Folder Github
+2. buat database mysql dengan nama : face_attendance
+3. buka command prompt
+4. install virtual enviroment, dengan cara pip install virtualenv
+5. cd ke folder project
+6. jalankan virtualenv env (ketik di command prompt)
+7. jalankan venv\Scripts\activate.bat (ketik di command prompt)
+8. jalankan pip install -r requirements.txt
+9. jalankan file django dengan ketik python manage.py runserver
