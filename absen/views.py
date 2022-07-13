@@ -7,7 +7,7 @@ from django.http.response import StreamingHttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from absen.camera import *
-from absen.train import *
+from absen.recog import *
 
 from django.forms import formset_factory
 
@@ -16,6 +16,8 @@ from . models import kelas_guru as KelasModel
 from . models import list_kelas_murid
 
 from . models import absen as kuisModel
+
+from . models import data_absen as absensi
 
 from . models import data_wajah as wajah
 
@@ -166,21 +168,39 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 detector = MTCNN()
 
 def getImagesAndLabels(id_kelas):
-		kelas = id_kelas
-		lis = list_kelas_murid.objects.filter(id_kelas_guru=kelas) 
-		path = "dataset/"
-		grup_sis_image = []
+	kelas = id_kelas
+	lis = list_kelas_murid.objects.filter(id_kelas_guru=kelas) 
+	grup_sis_image = []
+	path = "dataset/"
 
-		for i in lis:
-			sis_img = []
-			path_sis = wajah.objects.filter(id_user=i.id_user_id)
-			for j in path_sis:
-				fix_path = path+j.nama_file
-				grup_sis_image.append(fix_path)
+	for i in lis:
+		sis_img = []
+		path_sis = wajah.objects.filter(id_user=i.id_user_id)
+		for j in path_sis:
+			fix_path = path+j.nama_file
+			grup_sis_image.append(fix_path)
 
-		#imagePaths = [os.path.join(path,f) for f in os.listdir(path)]     
-		faceSamples=[]
-		ids = []
+    
+	faceSamples=[]
+	ids = []
+
+	for j in grup_sis_image:
+		imgopen = cv2.imread(j)
+		imgrey = cv2.imread(j, 0)
+		id_f = int(os.path.split(j)[-1].split("_")[0])
+		result = detector.detect_faces(imgopen)
+		print(result)
+		for person in result:
+			box = person['box']
+			keypoints = person['keypoints']
+			conf = person['confidence']
+			x, y, w, h = box[0], box[1], box[2], box[3]
+			if conf > 0.9:
+				imgs = imgrey[y:y+h,x: x + w]
+				faceSamples.append(imgs)
+				ids.append(id_f)
+
+	return faceSamples,ids
 
 def buatabsen(request, id_kelas_guru = None):
 	current_user = request.user
@@ -190,7 +210,10 @@ def buatabsen(request, id_kelas_guru = None):
 		if form.is_valid():
 			nama_absen = form.cleaned_data.get('nama_kuis')
 			id_kelas_guru = request.POST.get('id_kelas_guru')
-			getImagesAndLabels(id_kelas_guru)
+			faces,ids = getImagesAndLabels(id_kelas_guru)
+			recognizer.train(faces, np.array(ids))
+			recognizer.write('trainer/trainer.yml')
+			print("\n [INFO] {0} faces trained. Exiting Program".format(len(np.unique(ids))))
 			form.save()
 			return redirect('semua_kelas_guru')
 		else:
@@ -234,6 +257,16 @@ def classroom(request):
 def record(request):
 	return render(request,"record.html")
 
+def laporan(request, id_absen=None):
+	abseng = absensi.objects.filter(id_absen_id=id_absen).select_related('id_user')
+	i=0
+	return render(request,"laporan.html", {"abseng":abseng,"i":i})
+
+def absensih(request, id_absen=None, id_kelas_guru=None):
+	id_absen = id_absen
+	idkg = id_kelas_guru
+	return render(request,"absen.html", {'id_absen':id_absen, 'idkg':idkg})
+
 def gen(camera,username):
 	while True:
 		frame = camera.get_frame(username)
@@ -244,4 +277,17 @@ def video_stream(request):
 	current_user = request.user
 	id_user = current_user.id_user
 	return StreamingHttpResponse(gen(VideoCamera(),id_user),
+      	content_type='multipart/x-mixed-replace; boundary=frame')
+
+
+def gan(recog ,username, id_absen):
+	while True:
+		frame = recog.absent(username, id_absen)
+		yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+
+def video_absen(request, id_absen=None):
+	current_user = request.user
+	id_user = current_user.id_user
+	return StreamingHttpResponse(gan(FaceRecog(),id_user,id_absen),
       	content_type='multipart/x-mixed-replace; boundary=frame')

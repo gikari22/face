@@ -95,11 +95,6 @@
     {% csrf_token %}
       <span><label> Nama Absen </label></span><br>
         {% render_field form.nama_absen class="form-control" %}
-      <span><label> Waktu Mulai </label></span><br>
-        {% render_field form.waktu_mulai class="form-control" %}<br>
-      <span><label> Waktu Selesai </label></span><br>
-        {% render_field form.waktu_selesai class="form-control" %}<br>
-        <p>{{kls.id_kelas_guru}}</p>
         <input type="hidden" name="id_kelas_guru" value="{{kls.id_kelas_guru}}"><br>
         <input type="hidden" name="jumlah_terisi" value="0"><br>
         <center>

@@ -7,7 +7,7 @@ from . import views
 import json
 from . models import User as user
 
-from . models import data_wajah as wajah
+from . models import data_absen as absen
 
 import time
 
@@ -19,10 +19,11 @@ detector = MTCNN()
 class VideoCamera(object):
 	def __init__(self):
 		self.cam = cv2.VideoCapture(0)
-		self.cam.set(3, 700) # set video width
-		self.cam.set(4, 550) # set video height
+		self.cam.set(3, 800) # set video width
+		self.cam.set(4, 600) # set video height
 		self.count = 0
 		self.status = 1
+		self.font = cv2.FONT_HERSHEY_SIMPLEX
 
 	def __del__(self):
 		self.cam.release()
@@ -39,27 +40,33 @@ class VideoCamera(object):
 		result = detector.detect_faces(frame)
 		for person in result:
 			data = user.objects.get(id_user=id_user)
-			bounding_box = person['box']
+			box = person['box']
 			keypoints = person['keypoints']
-			self.count += 1
+			conf = person['confidence']
+			print(conf)
+			x, y, w, h = box[0], box[1], box[2], box[3]
 			cv2.rectangle(frame,
-						(bounding_box[0], bounding_box[1]),
-						(bounding_box[0]+bounding_box[2], bounding_box[1] + bounding_box[3]),
+						(x, y),
+						(x+w, y + h),
 						(34, 255, 140),
 						4)
-			if self.count <=30:
+			if self.count < 30 and w >=200 and len(result) == 1:
+				self.count += 1
+				cv2.putText(frame,"Tunggu", (x+5,y-5), self.font, 1, (255,255,255), 2)
 				nama_file = "{0}_{1}_{2}_{3}-".format(data.id_user,data.username,data.first_name,data.last_name) + str(self.count) + ".jpg"
-				cv2.imwrite("dataset/" + nama_file, gray[bounding_box[1]:bounding_box[1]+bounding_box[3],bounding_box[0]: bounding_box[0] + bounding_box[2]])
-				record = wajah(nama_file=nama_file,id_user_id=data.id_user)
-				record.save()
-			else:
+				cv2.imwrite("dataset/" + nama_file, gray[y:y+h,x: x + w])
+				#record = wajah(nama_file=nama_file,id_user_id=data.id_user)
+				#record.save()
+			elif w < 200:
+				cv2.putText(frame,"Dekatkan lagi wajah anda", (x+5,y-5), self.font, 1, (255,255,255), 2)
+			elif self.count == 30 :
+				#cv2.putText(frame,"Sudah di disimpan", (x+5,y-5), self.font, 1, (255,255,255), 2)
+				cv2.putText(frame,"Silahkan Kembali", (x+5,y-5), self.font, 1, (255,255,255), 2)
 				data.is_face_recorded = 1
 				data.save()
-				self.cam.stream.release()
-				break
 
-		frame_flip = cv2.flip(frame, 15)
-		ret, frame = cv2.imencode('.jpg', frame_flip)
+		#frame_flip = cv2.flip(frame, 15)
+		ret, frame = cv2.imencode('.jpg', frame)
 
 
 		return frame.tobytes()
