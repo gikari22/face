@@ -7,6 +7,8 @@ from . import views
 import json
 from . models import User as user
 
+from . models import data_wajah as wajah
+
 from . models import data_absen as absen
 
 import time
@@ -45,18 +47,18 @@ class VideoCamera(object):
 			conf = person['confidence']
 			print(conf)
 			x, y, w, h = box[0], box[1], box[2], box[3]
-			cv2.rectangle(frame,
+			'''cv2.rectangle(frame,
 						(x, y),
 						(x+w, y + h),
 						(34, 255, 140),
-						4)
+						4)'''
 			if self.count < 30 and w >=200 and len(result) == 1:
 				self.count += 1
 				cv2.putText(frame,"Tunggu", (x+5,y-5), self.font, 1, (255,255,255), 2)
 				nama_file = "{0}_{1}_{2}_{3}-".format(data.id_user,data.username,data.first_name,data.last_name) + str(self.count) + ".jpg"
-				cv2.imwrite("dataset/" + nama_file, gray[y:y+h,x: x + w])
-				#record = wajah(nama_file=nama_file,id_user_id=data.id_user)
-				#record.save()
+				cv2.imwrite("dataset/" + nama_file, frame)
+				record = wajah(nama_file=nama_file,id_user_id=data.id_user)
+				record.save()
 			elif w < 200:
 				cv2.putText(frame,"Dekatkan lagi wajah anda", (x+5,y-5), self.font, 1, (255,255,255), 2)
 			elif self.count == 30 :

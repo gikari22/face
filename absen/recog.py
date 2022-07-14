@@ -26,7 +26,7 @@ class FaceRecog(object):
 		self.cam = cv2.VideoCapture(0)
 		self.cam.set(3, 800) # set video width
 		self.cam.set(4, 600) # set video height
-		self.abs = False
+		self.abs = 0
 
 	def __del__(self):
 		self.cam.release()
@@ -60,8 +60,9 @@ class FaceRecog(object):
 			absn = absen.objects.filter(id_absen_id=idabs, id_user_id=idusr).count()
 			if (confidence <= 50):
 				idusr = idusr
-				if idusr == usr.id_user and self.abs == False and absn < 1:
-					if w >=200:
+				if idusr == usr.id_user and self.abs == 0:
+		
+					if w >=200 and absn < 1:
 						nama_file = "{0}_{1}_{2}_".format(usr.username,usr.first_name,usr.last_name)+ "Hadir" + ".jpg"
 						cv2.imwrite("absen/" + nama_file, img)
 						absen.objects.create(file_absen="absen/" +nama_file,waktu_absen=datetime.datetime.now(),id_user_id=idusr,id_absen_id=idabs)
@@ -71,14 +72,16 @@ class FaceRecog(object):
 						isi = absin.objects.get(id_absen=idabs)
 						isi.jumlah_terisi = jml
 						isi.save()
-						self.abs = True
+						self.abs = 1
 						cv2.putText(img,"Absen Berhasil", (x+5,y-5), self.font, 1, (255,255,255), 2)
-					
-					else :
-						cv2.putText(img,"Dekatkan Wajah", (x+5,y-5), self.font, 1, (255,255,255), 2)
-			else :
-				cv2.putText(img,"Tidak Dikenali", (x+5,y-5), self.font, 1, (255,255,255), 2)
-				idusr = 0  
+				
+					elif absn == 1:
+						cv2.putText(img,"Absen Berhasil", (x+5,y-5), self.font, 1, (255,255,255), 2)
+						idusr = 0 
+
+				else :
+					cv2.putText(img,"Tidak Dikenali", (x+5,y-5), self.font, 1, (255,255,255), 2)
+					idusr = 0  
 
 
 		ret, img = cv2.imencode('.jpg', img)

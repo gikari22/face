@@ -180,12 +180,13 @@ def getImagesAndLabels(id_kelas):
 			fix_path = path+j.nama_file
 			grup_sis_image.append(fix_path)
 
-    
+	#print(grup_sis_image)
 	faceSamples=[]
 	ids = []
 
 	for j in grup_sis_image:
 		imgopen = cv2.imread(j)
+		#print(imgopen)
 		imgrey = cv2.imread(j, 0)
 		id_f = int(os.path.split(j)[-1].split("_")[0])
 		result = detector.detect_faces(imgopen)
